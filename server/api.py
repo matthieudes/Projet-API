@@ -1,18 +1,19 @@
 from fastapi import FastAPI
 
+import sqlite3
 
 app = FastAPI()
 
 
 @app.get("/")
-def index():
-    return {"welcome to fastapi"}
+def read_root():
+    conn= sqlite3.connect("chinook.db")
 
+    cursor=conn.cursor()
+    cursor.execute("Select * From tracks")
+    result=cursor.fetchall()
 
-@app.get("/items")
-def get_items():
-    return[
-        {"id":1, "description": "Item 1"},
-        {"id":2, "description": "Item 1"},
-        {"id":3, "description": "Item 1"},
-    ]
+    cursor.close()
+    conn.close()
+    
+    return {"résultat de recherche ": result}
